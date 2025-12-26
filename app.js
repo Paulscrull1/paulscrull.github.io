@@ -1,12 +1,7 @@
-// Получаем объект WebApp из Telegram
 const tg = window.Telegram.WebApp;
-tg.expand(); // Раскрыть на весь экран
+tg.expand();
 
-// Показываем имя пользователя
-const user = tg.initDataUnsafe.user;
-document.getElementById('user-greeting').textContent = `Привет, ${user.first_name}!`;
-
-// Загружаем "трек дня" из data/daily.json
+// Загружаем "трек дня"
 async function loadDailyTrack() {
   try {
     const res = await fetch('data/daily.json');
@@ -15,30 +10,40 @@ async function loadDailyTrack() {
     document.getElementById('title').textContent = track.title;
     document.getElementById('artist').textContent = track.artist;
     document.getElementById('cover').src = track.cover_url;
+    document.getElementById('rating-title').textContent = `Оцени: ${track.title}`;
 
     window.currentTrack = track;
   } catch (e) {
-    console.error("Не удалось загрузить трек дня:", e);
-    alert("Ошибка загрузки трека");
+    console.error("Ошибка загрузки трека:", e);
+    alert("Не удалось загрузить трек дня.");
   }
 }
 
-// Обновляем значения ползунков
+// Обновляем значения и сумму
 function updateValues() {
-  document.getElementById('rhymes').oninput = () => document.getElementById('rhymes-val').textContent = this.value;
-  document.getElementById('rhythm').oninput = () => document.getElementById('rhythm-val').textContent = this.value;
-  document.getElementById('style').oninput = () => document.getElementById('style-val').textContent = this.value;
-  document.getElementById('charisma').oninput = () => document.getElementById('charisma-val').textContent = this.value;
-  document.getElementById('vibe').oninput = () => document.getElementById('vibe-val').textContent = this.value;
+  const inputs = ['rhymes', 'rhythm', 'style', 'charisma', 'vibe'];
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    el.oninput = () => {
+      document.getElementById(`${id}-val`).textContent = el.value;
+      updateTotal();
+    };
+  });
 }
 
-// Открываем форму оценки
+function updateTotal() {
+  const sum = ['rhymes', 'rhythm', 'style', 'charisma', 'vibe']
+    .reduce((a, b) => a + +document.getElementById(b).value, 0);
+  document.getElementById('total-display').textContent = `Сумма: ${sum}/90`;
+}
+
+// Переход к оценке
 document.getElementById('open-rating').onclick = () => {
   document.getElementById('daily-track').style.display = 'none';
   document.getElementById('rating-section').style.display = 'block';
 };
 
-// Отправляем оценку в бота
+// Отправка в бота
 document.getElementById('submit-rating').onclick = () => {
   const ratings = {
     rhymes: +document.getElementById('rhymes').value,
@@ -50,7 +55,8 @@ document.getElementById('submit-rating').onclick = () => {
 
   const total = Object.values(ratings).reduce((a, b) => a + b, 0);
 
-  // Отправляем данные в бота
+  const user = tg.initDataUnsafe.user;
+
   tg.sendData(JSON.stringify({
     type: 'review',
     user_id: user.id,
@@ -64,10 +70,9 @@ document.getElementById('submit-rating').onclick = () => {
   }));
 
   alert(`✅ Оценка отправлена!\nОбщий балл: ${total}/90`);
-  tg.close(); // Закрываем окно
+  tg.close();
 };
 
-// Загружаем всё при старте
 document.addEventListener('DOMContentLoaded', () => {
   loadDailyTrack();
   updateValues();

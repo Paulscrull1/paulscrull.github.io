@@ -3,104 +3,158 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>UnderRapped</title>
+  <title>underrapped</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    :root {
+      --bg: #000;
+      --text: #fff;
+      --accent: #1DB954;
+      --gray: #aaa;
+      --card-bg: #121212;
+    }
     body {
-      background: #121212;
-      color: white;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
       padding: 20px;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
     header {
-      text-align: center;
       margin-bottom: 30px;
-    }
-    h1 { font-size: 1.8em; color: #1DB954; }
-    .track-card {
-      background: #181818;
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
-    .track-card img {
-      width: 180px;
-      height: 180px;
-      border-radius: 12px;
-      object-fit: cover;
-      margin-bottom: 16px;
-    }
-    h2 { font-size: 1.4em; margin-bottom: 8px; }
-    p { color: #aaa; margin-bottom: 16px; }
-    button {
-      background: #1DB954;
-      color: white;
-      border: none;
-      padding: 14px 24px;
-      font-size: 1.1em;
-      border-radius: 24px;
-      cursor: pointer;
-      margin-top: 10px;
       width: 100%;
     }
+    h1 {
+      font-size: 1.6em;
+      letter-spacing: -0.5px;
+      color: var(--gray);
+      font-weight: 500;
+    }
+    .track-card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      margin-bottom: 30px;
+    }
+    .cover {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+    .info {
+      padding: 20px;
+    }
+    .title {
+      font-size: 1.4em;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .artist {
+      color: var(--gray);
+      font-size: 1.1em;
+    }
+    button.main {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--text);
+      padding: 14px 32px;
+      font-size: 1.1em;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 10px;
+    }
+    button.main:hover {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .rating-section {
+      display: none;
+      width: 100%;
+      max-width: 400px;
+    }
     .slider {
-      margin: 20px 0;
-      text-align: center;
+      margin: 24px 0;
+      text-align: left;
+      padding: 0 20px;
     }
     .slider label {
       display: block;
       margin-bottom: 8px;
-      font-weight: bold;
+      font-weight: 500;
+      font-size: 0.95em;
+      color: var(--gray);
     }
     .slider input[type="range"] {
       width: 100%;
-      accent-color: #1DB954;
+      accent-color: var(--accent);
     }
-    #rating-section { display: none; }
+    .value {
+      display: inline-block;
+      width: 30px;
+      text-align: right;
+      font-weight: bold;
+    }
+    .total-score {
+      font-size: 1.2em;
+      color: var(--accent);
+      margin: 20px 0;
+    }
   </style>
-  <!-- Подключаем SDK Telegram -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
   <header>
-    <h1>🎧 UnderRapped</h1>
-    <p id="user-greeting">Добро пожаловать!</p>
+    <h1>underrapped</h1>
   </header>
 
   <section id="daily-track">
     <div class="track-card">
-      <img id="cover" src="https://via.placeholder.com/300" alt="Обложка" />
-      <h2 id="title">Загрузка...</h2>
-      <p id="artist">—</p>
-      <button id="open-rating">Оценить трек дня</button>
+      <img id="cover" class="cover" src="https://via.placeholder.com/400" alt="Обложка" />
+      <div class="info">
+        <div class="title" id="title">Загрузка...</div>
+        <div class="artist" id="artist">—</div>
+      </div>
     </div>
+    <button class="main" id="open-rating">Оценить трек дня</button>
   </section>
 
-  <section id="rating-section">
+  <section id="rating-section" class="rating-section">
     <div class="track-card">
-      <h2>Оцени трек</h2>
+      <div class="info">
+        <div class="title" id="rating-title">Оцени трек</div>
+      </div>
+
       <div class="slider">
-        <label>Рифмы/образы <span id="rhymes-val">5</span>/10</label>
+        <label>Рифмы <span class="value" id="rhymes-val">5</span>/10</label>
         <input type="range" min="1" max="10" value="5" id="rhymes" />
       </div>
       <div class="slider">
-        <label>Структура <span id="rhythm-val">5</span>/10</label>
+        <label>Структура <span class="value" id="rhythm-val">5</span>/10</label>
         <input type="range" min="1" max="10" value="5" id="rhythm" />
       </div>
       <div class="slider">
-        <label>Стиль <span id="style-val">5</span>/10</label>
+        <label>Стиль <span class="value" id="style-val">5</span>/10</label>
         <input type="range" min="1" max="10" value="5" id="style" />
       </div>
       <div class="slider">
-        <label>Харизма <span id="charisma-val">5</span>/10</label>
+        <label>Харизма <span class="value" id="charisma-val">5</span>/10</label>
         <input type="range" min="1" max="10" value="5" id="charisma" />
       </div>
       <div class="slider">
-        <label>Вайб <span id="vibe-val">5</span>/10</label>
+        <label>Вайб <span class="value" id="vibe-val">5</span>/10</label>
         <input type="range" min="1" max="10" value="5" id="vibe" />
       </div>
-      <button id="submit-rating">Отправить оценку</button>
+
+      <div class="total-score" id="total-display">Сумма: 25/90</div>
+      <button class="main" id="submit-rating">Отправить оценку</button>
     </div>
   </section>
 
