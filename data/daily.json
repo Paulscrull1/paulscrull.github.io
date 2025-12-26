@@ -1,0 +1,7 @@
+{
+  "id": "track_123",
+  "title": "Название трека",
+  "artist": "Исполнитель",
+  "cover_url": "https://via.placeholder.com/400",
+  "preview_url": "https://example.com/preview.mp3"
+}

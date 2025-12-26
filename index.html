@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UnderRapped</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Подключаем Telegram WebApp -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎧 UnderRapped</h1>
+      <p id="user">Загрузка...</p>
+    </header>
+
+    <section id="daily-track">
+      <h2>🌞 Трек дня</h2>
+      <img id="cover" src="https://via.placeholder.com/300" alt="Обложка" />
+      <h3 id="title">Загрузка...</h3>
+      <p id="artist"></p>
+      <button id="rate-btn">Оценить</button>
+    </section>
+
+    <section id="rating" style="display:none">
+      <h2>Оцени трек</h2>
+      <div class="slider">
+        <label>Рифмы <span id="r">5</span>/10</label>
+        <input type="range" min="1" max="10" value="5" id="rhymes" />
+      </div>
+      <!-- Добавь rhythm, style, charisma, vibe -->
+
+      <button id="submit">Отправить</button>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
